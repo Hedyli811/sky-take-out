@@ -90,4 +90,25 @@ public class EmployeeController {
         return Result.success(pageResult);
      }
 
+     @PostMapping("/status/{status}")
+     @ApiOperation("startOrStop employee")
+     public Result startOrStop(@PathVariable Integer status,long id){
+        employeeService.startOrStop(status,id);
+        return Result.success(status);
+     }
+
+     @GetMapping("/{id}")
+     @ApiOperation("get employee by id")
+    public Result<Employee> getById(@PathVariable Long id){
+        Employee employee =  employeeService.getById(id);
+
+        return Result.success(employee);
+    }
+
+    @PutMapping("")
+    public Result update(@RequestBody EmployeeDTO employeeDTO){
+        employeeService.update(employeeDTO);
+        return Result.success();
+    }
+
 }
