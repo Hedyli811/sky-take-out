@@ -3,7 +3,6 @@ package com.sky.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
-import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
@@ -68,22 +67,25 @@ public class DishServiceImpl implements DishService {
     @Override
     public void deleteBatch(List<Long> ids) {
 
-        for (Long id : ids) {
-            Dish dish = dishMapper.getById(id);
-            if(dish.getStatus() == StatusConstant.ENABLE ){
-                throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
-            }
-        }
+//        for (Long id : ids) {
+//            Dish dish = dishMapper.getById(id);
+//            if(dish.getStatus() == StatusConstant.ENABLE ){
+//                throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
+//            }
+//        }
 
        List<Long> setmealIds =  setmealDishMapper.getSetmealIdsByDishIds(ids);
         if(setmealIds!=null&&setmealIds.size()>0){
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
 
-        for (Long id : ids) {
-            dishMapper.deleteById(id);
-            dishFlavorMapper.deleteByDishId(id);
-        }
+//        for (Long id : ids) {
+//            dishMapper.deleteById(id);
+//            dishFlavorMapper.deleteByDishId(id);
+//        }
+
+        dishMapper.deleteByIds(ids);
+        dishFlavorMapper.deleteByDishIds(ids);
 
 
 
