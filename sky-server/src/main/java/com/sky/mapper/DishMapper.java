@@ -1,6 +1,7 @@
 package com.sky.mapper;
 
 import com.github.pagehelper.Page;
+import com.sky.annotation.AutoFill;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.enumeration.OperationType;
@@ -29,7 +30,7 @@ public interface DishMapper {
      *
      * @param dish
      */
-  //  @AutoFill(value = OperationType.INSERT)
+    @AutoFill(value = OperationType.INSERT)
     void insert(Dish dish);
 
     /**
