@@ -3,6 +3,7 @@ package com.sky.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
+import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
@@ -90,4 +91,48 @@ public class DishServiceImpl implements DishService {
 
 
     }
+
+    @Override
+    public DishVO getByIdWithFlavor(Long id) {
+        //分步查询比用join的性能好
+        Dish dish =  dishMapper.getById(id);
+        List<DishFlavor> dishFlavors =  dishFlavorMapper.getByDishId(id);
+        DishVO dishVO = new DishVO();
+
+        BeanUtils.copyProperties(dish,dishVO);
+        dishVO.setFlavors(dishFlavors);
+
+        return dishVO;
+    }
+
+    @Transactional
+    @Override
+    public void updateWithFlavor(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dishMapper.update(dish);
+
+        //因为口味修改可能会删除可能有新增和修改情况复杂，所以直接删掉原有的再新增
+        dishFlavorMapper.deleteByDishId(dish.getId());
+        List<DishFlavor> flavors =  dishDTO.getFlavors();
+
+        if(flavors!=null && flavors.size()>0){
+            flavors.forEach( dishFlavor -> {
+                dishFlavor.setDishId(dishDTO.getId());
+            });
+            dishFlavorMapper.insertBatch(flavors);
+        }
+    }
+
+    @Override
+    public List<Dish> list(Long categoryId) {
+        //TODO
+        Dish dish = Dish.builder()
+                .categoryId(categoryId)
+                .status(StatusConstant.ENABLE)
+                .build();
+        return dishMapper.list(dish);
+    }
+
+
 }
