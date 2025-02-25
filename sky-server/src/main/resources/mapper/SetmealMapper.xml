@@ -31,4 +31,19 @@
         </where>
         order by s.create_time desc
     </select>
+    <select id="getByIdWithDish" parameterType="long"  resultType="com.sky.vo.SetmealVO">
+        select a.*,
+               b.id    sd_id,
+               b.setmeal_id,
+               b.dish_id,
+               b.name  sd_name,
+               b.price sd_price,
+               b.copies
+        from setmeal a
+                 left join
+             setmeal_dish b
+             on
+                 a.id = b.setmeal_id
+        where a.id = #{id}
+    </select>
 </mapper>
